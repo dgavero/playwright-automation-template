@@ -2,6 +2,11 @@
 import { Client, GatewayIntentBits } from 'discord.js';
 import fs from 'node:fs';
 import path from 'node:path';
+import { REST, Routes } from 'discord.js';
+
+const REST_TOKEN = process.env.DISCORD_BOT_TOKEN;
+const rest = REST_TOKEN ? new REST({ version: '10' }).setToken(REST_TOKEN) : null;
+
 
 const TOKEN = process.env.DISCORD_BOT_TOKEN;
 const CHANNEL_ID = process.env.DISCORD_CHANNEL_ID;
@@ -59,12 +64,12 @@ export async function appendSummary({ passed, failed, skipped }) {
   const meta = readRunMeta();
   if (!meta) return;
 
-    // ✅ Ensure client & channel are ready even if setup shut them down earlier
+  // ✅ Ensure client & channel are ready even if setup shut them down earlier
   await initBot();
 
   const header = await channel.messages.fetch(meta.headerMessageId);
   const content =
-`${meta.suiteLabel}
+    `${meta.suiteLabel}
 📊 **Test Summary**
 ✅ Passed: ${passed}  
 ❌ Failed: ${failed}  
@@ -72,6 +77,27 @@ export async function appendSummary({ passed, failed, skipped }) {
 
   await header.edit({ content });
 }
+
+// Edit the header while tests are running: adds a text progress bar + percent + [X/Total]
+export async function editRunningHeader({ completed, total }) {
+  const meta = readRunMeta();
+  if (!meta || !rest) return;
+
+  // Build an 8-segment bar like: ▰▰▰▱▱▱▱▱
+  const percent = total === 0 ? 0 : Math.floor((completed / total) * 100);
+  const segments = 8;
+  const filled = Math.max(0, Math.min(segments, Math.round((percent / 100) * segments)));
+  const bar = '▰'.repeat(filled) + '▱'.repeat(segments - filled);
+
+  const content = `${meta.suiteLabel}
+Tests are running ${bar} ${percent}% [${completed}/${total}]`;
+
+  await rest.patch(
+    Routes.channelMessage(meta.channelId, meta.headerMessageId),
+    { body: { content } }
+  );
+}
+
 
 export async function shutdownBot() {
   if (client) {
