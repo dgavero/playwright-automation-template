@@ -1,16 +1,29 @@
-// helpers/discord/discordReporter.js
+/**
+ * Custom Playwright reporter for Discord integration.
+ * - Shows live progress updates (via REST) as tests run.
+ * - Posts the final summary to Discord once all tests complete.
+ */
+
+
 import { appendSummary, shutdownBot, editRunningHeader } from './discordBot.js';
 
 class DiscordReporter {
   constructor() {
+    // Running tallies for the current suite.
     this.passed = 0;
     this.failed = 0;
     this.skipped = 0;
-    this.total = 0;
-    this.completed = 0;
+
+    // Progress counters for header updates.
+    this.total = 0;  // set once at start (planned tests after filters)
+    this.completed = 0;  // incremented on each test end (pass/fail/skip)
   }
 
-  // Discover all planned tests so we can render 0% [0/N] right away
+  /**
+   * Called once before any test runs.
+   * - Discovers the exact set of tests that will run (after grep/tags/CLI filters).
+   * - Immediately renders "0% [0/N]" so the Discord header shows progress from the start.
+   */
   async onBegin(config, suite) {
     const all = suite.allTests();
     this.total = all.length;
@@ -18,6 +31,14 @@ class DiscordReporter {
     await editRunningHeader({ completed: 0, total: this.total });
   }
 
+  /**
+ * Called after each test completes (pass/fail/skip).
+ * - Updates counters.
+ * - Re-renders the running header with the latest percentage and [completed/total].
+ *
+ * Note: If retries are enabled, onTestEnd fires per attempt. For small suites this is fine;
+ *       when the suite grows, consider counting a test as completed only once (final outcome).
+ */
   async onTestEnd(test, result) {
     this.completed += 1;
 
@@ -28,8 +49,12 @@ class DiscordReporter {
     await editRunningHeader({ completed: this.completed, total: this.total });
   }
 
+  /**
+   * Called once after the entire run finishes.
+   * - Replaces the running header with the final summary (existing format).
+   * - Closes the Gateway client (clean shutdown).
+   */
   async onEnd() {
-    // Switch to your existing final summary format (kept EXACTLY as you wrote it)
     await appendSummary({
       passed: this.passed,
       failed: this.failed,

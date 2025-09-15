@@ -1,8 +1,19 @@
-import dotenv from 'dotenv';
-dotenv.config();
+/**
+ * Playwright config with environment-driven setup + Discord integration.
+ * - Selects baseURL dynamically based on TEST_ENV (.env values).
+ * - Posts run header + summary to Discord (via globalSetup + reporter).
+ * - Supports optional TAGS filtering and configurable THREADS concurrency.
+ */
 
+
+import dotenv from 'dotenv';
 import { defineConfig } from '@playwright/test';
 
+
+dotenv.config();  // Load .env file into process.env
+
+
+// Normalize TEST_ENV (default to LOCAL)
 const testEnv = (process.env.TEST_ENV || 'LOCAL').toUpperCase();
 
 // Select URL based on TEST_ENV
@@ -22,20 +33,32 @@ if (!baseURL) {
   );
 }
 
-const tags = process.env.TAGS || '';
-const threads = parseInt(process.env.THREADS || '4', 10);
+// Optional filters from env
+const tags = process.env.TAGS || '';   // e.g., "smoke|samples"
+const threads = parseInt(process.env.THREADS || '4', 10);  // Default to 4 threads
+
 
 export default defineConfig({
+
+  // Where Playwright looks for tests
   testDir: './tests',
+
+  // 🔹 Global setup: posts the Discord header + thread before tests
   globalSetup: './helpers/discord/discordSetup.js',
+
+  // 🔹 Reporters:
+  // - list: console output
+  // - discordReporter: live updates + final summary in Discord
   reporter: [
     ['list'],
     ['./helpers/discord/discordReporter.js'],
   ],
   use: {
     baseURL, // ✅ Dynamic baseURL based on TEST_ENV
-    headless: true,
+    headless: true,  // Always run headless in CI
   },
-  workers: threads,
+  workers: threads,  // Concurrency controlled by THREADS env
+
+  // Optional tag filtering: run only tests matching TAGS/grep
   grep: tags ? new RegExp(tags) : undefined,
 });
