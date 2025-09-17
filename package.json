@@ -11,7 +11,8 @@
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
-    "@playwright/test": "^1.55.0"
+    "@playwright/test": "^1.55.0",
+    "prettier": "^3.6.2"
   },
   "dependencies": {
     "discord.js": "^14.22.1",

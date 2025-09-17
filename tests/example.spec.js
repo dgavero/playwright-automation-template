@@ -1,6 +1,6 @@
 // tests/example.spec.js
 import { test } from '../globalConfig.js';
-import { markPassed, markFailed, waitForElementVisible } from '../helpers/testUtils.js';
+import { markPassed, markFailed, safeWaitForElementVisible } from '../helpers/testUtils.js';
 
 const isProd = (process.env.TEST_ENV || 'LOCAL').toUpperCase() === 'PROD';
 
@@ -9,7 +9,7 @@ test.describe('positive @samples', () => {
     await page.goto('/');
 
     // Both example.com & playwright.dev have an <h1>
-    if (!(await waitForElementVisible(page, 'h1', { timeout: 7000 }))) {
+    if (!(await safeWaitForElementVisible(page, 'h1'))) {
       markFailed('Main heading <h1> is not visible');
     }
 
@@ -21,10 +21,10 @@ test.describe('positive @samples', () => {
 
     // Pick a homepage CTA that exists per env
     const ctaSelector = isProd
-      ? 'text=/Get started/i'          // playwright.dev
-      : 'text=/More information/i';    // example.com
+      ? 'text=/Get started/i' // playwright.dev
+      : 'text=/More information/i'; // example.com
 
-    if (!(await waitForElementVisible(page, ctaSelector, { timeout: 7000 }))) {
+    if (!(await safeWaitForElementVisible(page, ctaSelector))) {
       markFailed(`Expected homepage CTA not visible (${ctaSelector})`);
     }
 
@@ -37,7 +37,7 @@ test.describe('negative @samples', () => {
     await page.goto('/');
 
     // Intentionally fail: element should NOT exist
-    if (!(await waitForElementVisible(page, 'text=Totally Not There', { timeout: 2000 }))) {
+    if (!(await safeWaitForElementVisible(page, 'text=Totally Not There'))) {
       markFailed('Expected element not found.');
     }
 
@@ -49,7 +49,7 @@ test.describe('negative @samples', () => {
     await page.goto('/');
 
     // Intentionally fail: wrong title expectation for both envs
-    if (!(await waitForElementVisible(page, 'text=/This String Will Not Appear Anywhere/i', { timeout: 2000 }))) {
+    if (!(await safeWaitForElementVisible(page, 'text=/This String Will Not Appear Anywhere/i'))) {
       markFailed('Page title did not match expected value.');
     }
 

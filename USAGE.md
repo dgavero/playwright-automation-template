@@ -83,25 +83,10 @@ markPassed('All checks passed successfully');
 Marks test as failed, posts ❌, and **stops test immediately**.
 
 ```js
-if (!(await waitForElementVisible(page, '#loginBtn'))) {
+if (!(await safeWaitForElementVisible(page, '#loginBtn'))) {
   markFailed('Login button not found');
 }
 ```
-
----
-
-### `waitForElementVisible(pageOrLocator, selector?, opts?)`
-Waits until an element is visible. Returns `true` if found, `false` otherwise.
-
-```js
-const isVisible = await waitForElementVisible(page, '#submit', { timeout: 5000 });
-if (!isVisible) markFailed('Submit button missing');
-```
-
----
-
-### `waitForElementPresent(pageOrLocator, selector?, opts?)`
-Same as above but checks for DOM attachment instead of visibility.
 
 ---
 

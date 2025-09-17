@@ -20,6 +20,8 @@ const testEnv = (process.env.TEST_ENV || 'LOCAL').toUpperCase();
 let baseURL;
 if (testEnv === 'PROD') {
   baseURL = process.env.BASE_URL_PROD;
+} else if (testEnv === 'ORANGE') {
+  baseURL = process.env.BASE_URL_ORANGE;
 } else {
   baseURL = process.env.BASE_URL_LOCAL;
 }
@@ -28,7 +30,11 @@ if (testEnv === 'PROD') {
 if (!baseURL) {
   throw new Error(
     `❌ Missing baseURL for TEST_ENV=${testEnv}. Please set ${
-      testEnv === 'PROD' ? 'BASE_URL_PROD' : 'BASE_URL_LOCAL'
+      testEnv === 'PROD'
+        ? 'BASE_URL_PROD'
+        : testEnv === 'ORANGE'
+        ? 'BASE_URL_ORANGE'
+        : 'BASE_URL_LOCAL'
     } in your .env`
   );
 }

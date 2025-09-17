@@ -2,20 +2,27 @@
  * Utility helpers for Playwright tests with Discord integration.
  * - Provides markPassed/markFailed logging into Discord threads.
  * - Manages a message queue + flush cycle via REST (no Gateway).
- * - Includes small waitForElement helpers (return booleans instead of throwing).
+ * - Safe helpers: wrappers around Playwright actions (click, input, hover, navigate, wait)
+ *   that return boolean instead of throwing. This:
+ *      • keeps test code clean and readable
+ *      • allows custom Discord messages per failure
+ *      • still lets you include the short Playwright error via getLastError(page)
+ *
+ * Timeouts:
+ * - All helpers default to Timeouts.standard (15s).
+ * - Can override per call, e.g. safeClick(page, sel, { timeout: Timeouts.short }).
  */
-
 
 import fs from 'node:fs';
 import path from 'node:path';
 import { REST, Routes } from 'discord.js';
+import { Timeouts } from './Timeouts';
 
-
-/* 
-*  Shared run metadata & REST client (used to post to the per-run thread)
-*  `.discord-run.json` is written during setup (see discordSetup/sendSuiteHeader).
-*  We only need REST here (no Gateway) to post ✅ / ❌ logs into the thread.
-*/
+/*
+ *  Shared run metadata & REST client (used to post to the per-run thread)
+ *  `.discord-run.json` is written during setup (see discordSetup/sendSuiteHeader).
+ *  We only need REST here (no Gateway) to post ✅ / ❌ logs into the thread.
+ */
 const RUN_META_PATH = path.resolve('.discord-run.json');
 const TOKEN = process.env.DISCORD_BOT_TOKEN;
 const rest = TOKEN ? new REST({ version: '10' }).setToken(TOKEN) : null;
@@ -33,7 +40,6 @@ const pendingPosts = new Set();
 
 // Prevent duplicate ❌ posts for the same test (de-dupe by test title)
 const failedOnceByTitle = new Set();
-
 
 // -------------------- Public API -------------------- //
 /**
@@ -87,39 +93,6 @@ export async function flushReports() {
   await flush();
   if (pendingPosts.size > 0) {
     await Promise.all([...pendingPosts]);
-  }
-}
-
-
-// -------------------- Boolean Helpers -------------------- //
-
-/**
- * Waits for an element to become visible.
- * - Accepts either a Locator, or (Page, selector) + optional { timeout }.
- * - Returns true if visible within timeout, false otherwise (no throw).
- */
-export async function waitForElementVisible(target, selectorOrOpts, maybeOpts) {
-  const { locator, opts } = toLocatorAndOpts(target, selectorOrOpts, maybeOpts);
-  try {
-    await locator.waitFor({ state: 'visible', timeout: opts.timeout ?? 5000 });
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-/**
- * Waits for an element to be attached in the DOM.
- * - Accepts either a Locator, or (Page, selector) + optional { timeout }.
- * - Returns true if attached within timeout, false otherwise (no throw).
- */
-export async function waitForElementPresent(target, selectorOrOpts, maybeOpts) {
-  const { locator, opts } = toLocatorAndOpts(target, selectorOrOpts, maybeOpts);
-  try {
-    await locator.waitFor({ state: 'attached', timeout: opts.timeout ?? 5000 });
-    return true;
-  } catch {
-    return false;
   }
 }
 
@@ -198,21 +171,98 @@ async function flush() {
 }
 
 /**
- * Normalizes inputs to a { locator, opts } pair.
- * - Case A: target is a Locator → returns it directly.
- * - Case B: target is a Page and selectorOrOpts is a string → builds a Locator.
- * Throws if neither pattern matches (helps catch bad calls early).
+ * Keeps the last short error per Playwright Page so tests can optionally include it in logs.
+ * Usage in tests:
+ *   if (!(await safeClick(page, sel))) {
+ *     markFailed(`Click failed: ${getLastError(page)}`);
+ *   }
  */
-function toLocatorAndOpts(target, selectorOrOpts, maybeOpts) {
-  // If target is a Locator
-  if (target && typeof target.waitFor === 'function') {
-    return { locator: target, opts: selectorOrOpts || {} };
+const lastErrorMap = new WeakMap(); // key = Page, value = short error string
+
+function setLastErrorForPage(page, error) {
+  const short = error?.message?.split('\n')[0] || String(error);
+  lastErrorMap.set(page, short);
+}
+
+export function getLastError(page) {
+  return lastErrorMap.get(page) || '';
+}
+
+/** Wait until an element is visible (boolean return). */
+export async function safeWaitForElementVisible(page, selector, { timeout = Timeouts.standard } = {}) {
+  try {
+    await page.locator(selector).waitFor({ state: 'visible', timeout });
+    return true;
+  } catch (error) {
+    setLastErrorForPage(page, error);
+    return false;
   }
-  // If target is Page + selector
-  if (target && typeof target.locator === 'function' && typeof selectorOrOpts === 'string') {
-    return { locator: target.locator(selectorOrOpts), opts: maybeOpts || {} };
+}
+
+/** Click anything (buttons, links, checkboxes, menu items).  */
+export async function safeClick(page, selector, { timeout = Timeouts.standard } = {}) {
+  try {
+    const loc = page.locator(selector);
+    await loc.waitFor({ state: 'visible', timeout });
+    await loc.click({ timeout });
+    return true;
+  } catch (error) {
+    setLastErrorForPage(page, error);
+    return false;
   }
-  throw new Error(
-    'Invalid args: use either waitForElementVisible(locator, { timeout }) or waitForElementVisible(page, "selector", { timeout })'
-  );
+}
+
+/** Type into input/textarea with keystrokes (cross-platform select-all). */
+export async function safeInput(page, selector, text, { timeout = Timeouts.standard, delay = 15 } = {}) {
+  try {
+    const loc = page.locator(selector);
+    await loc.waitFor({ state: 'visible', timeout });
+    await loc.click({ timeout }); // focus
+
+    // Detect the right select-all combo for the current OS
+    const selectAllShortcut = process.platform === 'darwin' ? 'Meta+A' : 'Control+A';
+    await page.keyboard.press(selectAllShortcut);
+    await page.keyboard.press('Backspace');
+
+    if (text) await page.keyboard.type(String(text), { delay });
+    return true;
+  } catch (error) {
+    setLastErrorForPage(page, error);
+    return false;
+  }
+}
+
+/** Hover over element. */
+export async function safeHover(page, selector, { timeout = Timeouts.standard } = {}) {
+  try {
+    const loc = page.locator(selector);
+    await loc.waitFor({ state: 'visible', timeout });
+    await loc.hover({ timeout });
+    return true;
+  } catch (error) {
+    setLastErrorForPage(page, error);
+    return false;
+  }
+}
+
+/** Navigate to a given URL and confirm it loads. */
+export async function safeNavigateToUrl(page, url, { timeout = Timeouts.standard, waitUntil = 'load' } = {}) {
+  try {
+    await page.goto(url, { timeout, waitUntil });
+    return true;
+  } catch (error) {
+    setLastErrorForPage(page, error);
+    return false;
+  }
+}
+
+/** Wait for the page to load and URL to match the expected value (after a click or redirect). */
+export async function safeWaitForPageLoad(page, expectedUrl, { timeout = Timeouts.standard, waitUntil = 'load' } = {}) {
+  try {
+    await page.waitForURL(expectedUrl, { timeout, waitUntil });
+    return true;
+  } catch (error) {
+    setLastErrorForPage(page, error);
+    return false;
+  }
 }
