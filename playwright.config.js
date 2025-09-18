@@ -27,7 +27,11 @@ if (testEnv === 'PROD') {
 if (!baseURL) {
   throw new Error(
     `❌ Missing baseURL for TEST_ENV=${testEnv}. Please set ${
-      testEnv === 'PROD' ? 'BASE_URL_PROD' : testEnv === 'ORANGE' ? 'BASE_URL_ORANGE' : 'BASE_URL_LOCAL'
+      testEnv === 'PROD'
+        ? 'BASE_URL_PROD'
+        : testEnv === 'ORANGE'
+          ? 'BASE_URL_ORANGE'
+          : 'BASE_URL_LOCAL'
     } in your .env`
   );
 }
@@ -49,7 +53,7 @@ export default defineConfig({
   reporter: [['list'], ['./helpers/discord/discordReporter.js']],
   use: {
     baseURL, // ✅ Dynamic baseURL based on TEST_ENV
-    headless: false, // Always run headless in CI
+    headless: true, // Always run headless in CI
   },
   workers: threads, // Concurrency controlled by THREADS env
 

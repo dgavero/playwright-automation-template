@@ -4,7 +4,6 @@
  * - Posts the final summary to Discord once all tests complete.
  */
 
-
 import { appendSummary, shutdownBot, editRunningHeader } from './discordBot.js';
 
 class DiscordReporter {
@@ -15,8 +14,8 @@ class DiscordReporter {
     this.skipped = 0;
 
     // Progress counters for header updates.
-    this.total = 0;  // set once at start (planned tests after filters)
-    this.completed = 0;  // incremented on each test end (pass/fail/skip)
+    this.total = 0; // set once at start (planned tests after filters)
+    this.completed = 0; // incremented on each test end (pass/fail/skip)
   }
 
   /**
@@ -28,17 +27,17 @@ class DiscordReporter {
     const all = suite.allTests();
     this.total = all.length;
 
-    await editRunningHeader({ completed: 0, total: this.total });
+    await editRunningHeader({ completed: 0, total: this.total, passed: 0, failed: 0, skipped: 0 });
   }
 
   /**
- * Called after each test completes (pass/fail/skip).
- * - Updates counters.
- * - Re-renders the running header with the latest percentage and [completed/total].
- *
- * Note: If retries are enabled, onTestEnd fires per attempt. For small suites this is fine;
- *       when the suite grows, consider counting a test as completed only once (final outcome).
- */
+   * Called after each test completes (pass/fail/skip).
+   * - Updates counters.
+   * - Re-renders the running header with the latest percentage and [completed/total].
+   *
+   * Note: If retries are enabled, onTestEnd fires per attempt. For small suites this is fine;
+   *       when the suite grows, consider counting a test as completed only once (final outcome).
+   */
   async onTestEnd(test, result) {
     this.completed += 1;
 
@@ -46,7 +45,13 @@ class DiscordReporter {
     else if (result.status === 'skipped') this.skipped += 1;
     else this.failed += 1;
 
-    await editRunningHeader({ completed: this.completed, total: this.total });
+    await editRunningHeader({
+      completed: this.completed,
+      total: this.total,
+      passed: this.passed,
+      failed: this.failed,
+      skipped: this.skipped,
+    });
   }
 
   /**

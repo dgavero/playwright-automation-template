@@ -1,7 +1,13 @@
 // test for OrangeHRM
 import { test, expect } from '../globalConfig.js';
 import OrangeLoginPage from '../pages/OrangeLogin.page.js';
-import { setCurrentTestTitle, markPassed, markFailed, safeClick, safeWaitForElementVisible } from '../helpers/testUtils.js';
+import {
+  setCurrentTestTitle,
+  markPassed,
+  markFailed,
+  safeClick,
+  safeWaitForElementVisible,
+} from '../helpers/testUtils.js';
 
 const ORANGE_USER = process.env.ORANGE_USER || 'Admin';
 const ORANGE_PASS = process.env.ORANGE_PASS || 'admin123';
@@ -35,14 +41,17 @@ test.describe('@orange OrangeHRM Login', () => {
     await login.isOnDashboard();
 
     // Logout using selectors defined in the page object
-    if (!(await safeWaitForElementVisible(page, login.userMenuTrigger))) markFailed(`HOWEVER User menu not visible on page.`);
+    if (!(await safeWaitForElementVisible(page, login.userMenuTrigger)))
+      markFailed(`HOWEVER User menu not visible on page.`);
     await safeClick(page, login.userMenuTrigger);
 
-    if (!(await safeWaitForElementVisible(page, login.logoutItem))) markFailed(`HOWEVER Logout button not visible in dropdown menu.`);
+    if (!(await safeWaitForElementVisible(page, login.logoutItem)))
+      markFailed(`HOWEVER Logout button not visible in dropdown menu.`);
     await safeClick(page, login.logoutItem);
 
     // Verify we’re back on the login screen
-    if (!(await safeWaitForElementVisible(page, login.username))) markFailed(`Login form not visible after logout.`);
+    if (!(await safeWaitForElementVisible(page, login.username)))
+      markFailed(`Login form not visible after logout.`);
     markPassed('Successfully logged out and returned to login page');
   });
 });

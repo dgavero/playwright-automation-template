@@ -1,9 +1,8 @@
 /*
-* Discord client (Gateway) for posting the initial header + creating the thread.
-* Use the Gateway client only when needed (setup/summary). For fast, repeated
-* header edits during the run, use the REST client below.
-*/
-
+ * Discord client (Gateway) for posting the initial header + creating the thread.
+ * Use the Gateway client only when needed (setup/summary). For fast, repeated
+ * header edits during the run, use the REST client below.
+ */
 
 import { Client, GatewayIntentBits } from 'discord.js';
 import fs from 'node:fs';
@@ -11,8 +10,8 @@ import path from 'node:path';
 import { REST, Routes } from 'discord.js';
 
 // --- Discord Tokens & Config ---
-const TOKEN = process.env.DISCORD_BOT_TOKEN;          // Used by Gateway client
-const CHANNEL_ID = process.env.DISCORD_CHANNEL_ID;    // Target Discord channel
+const TOKEN = process.env.DISCORD_BOT_TOKEN; // Used by Gateway client
+const CHANNEL_ID = process.env.DISCORD_CHANNEL_ID; // Target Discord channel
 
 // --- REST Client Setup ---
 // Used for fast, frequent header edits (progress bar, running status, etc.)
@@ -25,7 +24,7 @@ const rest = TOKEN ? new REST({ version: '10' }).setToken(TOKEN) : null;
 const RUN_META_PATH = path.resolve('.discord-run.json');
 
 // --- Runtime State (lazily initialized) ---
-let client = null;  // Discord Gateway client (used for posting header + creating thread)
+let client = null; // Discord Gateway client (used for posting header + creating thread)
 let channel = null; // Target channel instance (fetched once, reused)
 
 /*
@@ -96,21 +95,24 @@ export function readRunMeta() {
  */
 export async function appendSummary({ passed, failed, skipped }) {
   const meta = readRunMeta();
-  if (!meta) return;
+  if (!meta || !rest) return;
 
-  // Ensure client & channel are ready even if setup shut them down earlier
-  await initBot();
+  const total = (passed || 0) + (failed || 0) + (skipped || 0);
+  const content = `${meta.suiteLabel}
+Tests completed ✅ 100% [${total}/${total}]
 
-  // Fetch the original header message by id, then edit it in place.
-  const header = await channel.messages.fetch(meta.headerMessageId);
-  const content =
-    `${meta.suiteLabel}
-📊 **Test Summary**
-✅ Passed: ${passed}  
-❌ Failed: ${failed}  
-⚪ Skipped: ${skipped}`;
+📊 Test Summary
+✅ Passed: ${passed}
+❌ Failed: ${failed}
+⚪ Skipped: ${skipped}
 
-  await header.edit({ content });
+🔗 More details on the test result can be checked here:
+<Playwright report link>`;
+
+  // Edit the same header message we created at setup time
+  await rest.patch(Routes.channelMessage(meta.channelId, meta.headerMessageId), {
+    body: { content },
+  });
 }
 
 /**
@@ -121,7 +123,7 @@ export async function appendSummary({ passed, failed, skipped }) {
  * REST client isn't initialized (missing DISCORD_BOT_TOKEN), return early.
  * This avoids crashes during local/dev misconfigurations.
  */
-export async function editRunningHeader({ completed, total }) {
+export async function editRunningHeader({ completed, total, passed = 0, failed = 0, skipped = 0 }) {
   const meta = readRunMeta();
   if (!meta || !rest) return;
 
@@ -129,18 +131,22 @@ export async function editRunningHeader({ completed, total }) {
   const percent = total === 0 ? 0 : Math.floor((completed / total) * 100);
   const segments = 8;
 
-    // Round to the nearest segment, clamp to [0, segments].
+  // Round to the nearest segment, clamp to [0, segments].
   const filled = Math.max(0, Math.min(segments, Math.round((percent / 100) * segments)));
   const bar = '▰'.repeat(filled) + '▱'.repeat(segments - filled);
 
   const content = `${meta.suiteLabel}
-Tests are running ${bar} ${percent}% [${completed}/${total}]`;
+Tests are running ${bar} ${percent}% [${completed}/${total}]
+
+📊 Test Summary
+✅ Passed: ${passed}
+❌ Failed: ${failed}
+⚪ Skipped: ${skipped}`;
 
   // PATCH the same header message we originally posted in sendSuiteHeader().
-  await rest.patch(
-    Routes.channelMessage(meta.channelId, meta.headerMessageId),
-    { body: { content } }
-  );
+  await rest.patch(Routes.channelMessage(meta.channelId, meta.headerMessageId), {
+    body: { content },
+  });
 }
 
 /**
@@ -154,7 +160,6 @@ export async function shutdownBot() {
     channel = null;
   }
 }
-
 
 /**
  * ──────────────────────────────────────────────────────────────────────────────

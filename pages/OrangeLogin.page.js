@@ -15,7 +15,7 @@ export default class OrangeLoginPage {
     this.username = '//input[@name="username"]';
     this.password = '//input[@name="password"]';
     this.submit = '//button[@type="submit"]';
-    this.dashboardMarker = '//h6[contains(normalize-space(.), "Dashboard")]';
+    this.dashboardMarker = '//h6[contains(@class,"topbar-header")]';
     this.errorToast = '//div[contains(@class,"orangehrm-login-error")]';
     this.userMenuTrigger = '//p[contains(@class,"oxd-userdropdown-name")]';
     this.dropdownMenu = '//ul[contains(@class,"oxd-dropdown-menu")]';
