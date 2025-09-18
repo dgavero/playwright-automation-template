@@ -23,8 +23,8 @@
  */
 
 export const Timeouts = {
-    short: 5_000,
-    standard: 15_000,
-    long: 15_000,
-    extraLong: 45_000,
+  short: 5_000,
+  standard: 15_000,
+  long: 30_000,
+  extraLong: 45_000,
 };

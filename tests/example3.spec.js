@@ -1,13 +1,7 @@
 // test for OrangeHRM
 import { test, expect } from '../globalConfig.js';
 import OrangeLoginPage from '../pages/OrangeLogin.page.js';
-import {
-  setCurrentTestTitle,
-  markPassed,
-  markFailed,
-  safeClick,
-  safeWaitForElementVisible,
-} from '../helpers/testUtils.js';
+import { setCurrentTestTitle, markPassed, markFailed, safeClick, safeWaitForElementVisible } from '../helpers/testUtils.js';
 
 const ORANGE_USER = process.env.ORANGE_USER || 'Admin';
 const ORANGE_PASS = process.env.ORANGE_PASS || 'admin123';
@@ -17,7 +11,7 @@ test.beforeEach(async ({}, testInfo) => {
 });
 
 test.describe('@orange OrangeHRM Login', () => {
-  test('positive: login with valid credentials', async ({ page }) => {
+  test('Login with valid credentials', async ({ page }) => {
     const login = new OrangeLoginPage(page);
     await login.open();
     await login.login(ORANGE_USER, ORANGE_PASS);
@@ -25,7 +19,7 @@ test.describe('@orange OrangeHRM Login', () => {
     markPassed('Successfully logged in and saw dashboard');
   });
 
-  test('negative: invalid credentials show error', async ({ page }) => {
+  test('Invalid credentials should show login error', async ({ page }) => {
     const login = new OrangeLoginPage(page);
     await login.open();
     await login.login('wronguser', 'wrongpass');
@@ -33,7 +27,7 @@ test.describe('@orange OrangeHRM Login', () => {
     markPassed('Error message displayed for invalid credentials');
   });
 
-  test('logout from dashboard', async ({ page }) => {
+  test('Logout from dashboard', async ({ page }) => {
     // Login
     const login = new OrangeLoginPage(page);
     await login.open();
@@ -41,17 +35,14 @@ test.describe('@orange OrangeHRM Login', () => {
     await login.isOnDashboard();
 
     // Logout using selectors defined in the page object
-    if (!(await safeWaitForElementVisible(page, login.userMenuTrigger)))
-      markFailed(`HOWEVER User menu not visible on page.`);
+    if (!(await safeWaitForElementVisible(page, login.userMenuTrigger))) markFailed(`HOWEVER User menu not visible on page.`);
     await safeClick(page, login.userMenuTrigger);
 
-    if (!(await safeWaitForElementVisible(page, login.logoutItem)))
-      markFailed(`HOWEVER Logout button not visible in dropdown menu.`);
+    if (!(await safeWaitForElementVisible(page, login.logoutItem))) markFailed(`HOWEVER Logout button not visible in dropdown menu.`);
     await safeClick(page, login.logoutItem);
 
     // Verify we’re back on the login screen
-    if (!(await safeWaitForElementVisible(page, login.username)))
-      markFailed(`Login form not visible after logout.`);
+    if (!(await safeWaitForElementVisible(page, login.username))) markFailed(`Login form not visible after logout.`);
     markPassed('Successfully logged out and returned to login page');
   });
 });

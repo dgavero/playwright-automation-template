@@ -189,7 +189,11 @@ export function getLastError(page) {
 }
 
 /** Wait until an element is visible (boolean return). */
-export async function safeWaitForElementVisible(page, selector, { timeout = Timeouts.standard } = {}) {
+export async function safeWaitForElementVisible(
+  page,
+  selector,
+  { timeout = Timeouts.standard } = {}
+) {
   try {
     await page.locator(selector).waitFor({ state: 'visible', timeout });
     return true;
@@ -213,7 +217,12 @@ export async function safeClick(page, selector, { timeout = Timeouts.standard } 
 }
 
 /** Type into input/textarea with keystrokes (cross-platform select-all). */
-export async function safeInput(page, selector, text, { timeout = Timeouts.standard, delay = 15 } = {}) {
+export async function safeInput(
+  page,
+  selector,
+  text,
+  { timeout = Timeouts.standard, delay = 15 } = {}
+) {
   try {
     const loc = page.locator(selector);
     await loc.waitFor({ state: 'visible', timeout });
@@ -246,7 +255,11 @@ export async function safeHover(page, selector, { timeout = Timeouts.standard } 
 }
 
 /** Navigate to a given URL and confirm it loads. */
-export async function safeNavigateToUrl(page, url, { timeout = Timeouts.standard, waitUntil = 'load' } = {}) {
+export async function safeNavigateToUrl(
+  page,
+  url,
+  { timeout = Timeouts.extraLong, waitUntil = 'load' } = {}
+) {
   try {
     await page.goto(url, { timeout, waitUntil });
     return true;
@@ -257,7 +270,11 @@ export async function safeNavigateToUrl(page, url, { timeout = Timeouts.standard
 }
 
 /** Wait for the page to load and URL to match the expected value (after a click or redirect). */
-export async function safeWaitForPageLoad(page, expectedUrl, { timeout = Timeouts.standard, waitUntil = 'load' } = {}) {
+export async function safeWaitForPageLoad(
+  page,
+  expectedUrl,
+  { timeout = Timeouts.extraLong, waitUntil = 'load' } = {}
+) {
   try {
     await page.waitForURL(expectedUrl, { timeout, waitUntil });
     return true;

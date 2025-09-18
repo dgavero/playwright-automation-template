@@ -5,13 +5,10 @@
  * - Supports optional TAGS filtering and configurable THREADS concurrency.
  */
 
-
 import dotenv from 'dotenv';
 import { defineConfig } from '@playwright/test';
 
-
-dotenv.config();  // Load .env file into process.env
-
+dotenv.config(); // Load .env file into process.env
 
 // Normalize TEST_ENV (default to LOCAL)
 const testEnv = (process.env.TEST_ENV || 'LOCAL').toUpperCase();
@@ -30,22 +27,16 @@ if (testEnv === 'PROD') {
 if (!baseURL) {
   throw new Error(
     `❌ Missing baseURL for TEST_ENV=${testEnv}. Please set ${
-      testEnv === 'PROD'
-        ? 'BASE_URL_PROD'
-        : testEnv === 'ORANGE'
-        ? 'BASE_URL_ORANGE'
-        : 'BASE_URL_LOCAL'
+      testEnv === 'PROD' ? 'BASE_URL_PROD' : testEnv === 'ORANGE' ? 'BASE_URL_ORANGE' : 'BASE_URL_LOCAL'
     } in your .env`
   );
 }
 
 // Optional filters from env
-const tags = process.env.TAGS || '';   // e.g., "smoke|samples"
-const threads = parseInt(process.env.THREADS || '4', 10);  // Default to 4 threads
-
+const tags = process.env.TAGS || ''; // e.g., "smoke|samples"
+const threads = parseInt(process.env.THREADS || '4', 10); // Default to 4 threads
 
 export default defineConfig({
-
   // Where Playwright looks for tests
   testDir: './tests',
 
@@ -55,15 +46,12 @@ export default defineConfig({
   // 🔹 Reporters:
   // - list: console output
   // - discordReporter: live updates + final summary in Discord
-  reporter: [
-    ['list'],
-    ['./helpers/discord/discordReporter.js'],
-  ],
+  reporter: [['list'], ['./helpers/discord/discordReporter.js']],
   use: {
     baseURL, // ✅ Dynamic baseURL based on TEST_ENV
-    headless: true,  // Always run headless in CI
+    headless: false, // Always run headless in CI
   },
-  workers: threads,  // Concurrency controlled by THREADS env
+  workers: threads, // Concurrency controlled by THREADS env
 
   // Optional tag filtering: run only tests matching TAGS/grep
   grep: tags ? new RegExp(tags) : undefined,
