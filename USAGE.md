@@ -88,6 +88,7 @@ DISCORD_LOG_PASSED=0
 3. **Per-Test**
    - `markPassed()` → ✅ optional (only if DISCORD_LOG_PASSED=1).
    - `markFailed(reason)` → ❌ always posted, with screenshot attached.
+   - Whole-test timeouts are logged as: **“Test timed-out after {N}s.”**
 
 4. **Final Summary**
    - Header replaced with final counts.
@@ -140,32 +141,7 @@ Override with `Timeouts.short`, `long`, `extraLong`.
 
 ---
 
-## 6️⃣ Project Structure
-
-```
-e2e-project/
-├── helpers/
-│   ├── discord/
-│   │   ├── discordBot.js         # Discord client
-│   │   ├── discordReporter.js    # Custom Playwright reporter
-│   │   ├── discordSetup.js       # Posts header + creates thread
-│   ├── testUtils.js              # markPassed/markFailed + safe helpers
-│   ├── Timeouts.js               # Global timeout values
-├── tests/
-│   ├── example.spec.js           # Sample test suite
-│   ├── example2.spec.js
-│   ├── sample3_orange_login.spec.js
-├── .env
-├── globalConfig.js               # Hooks (beforeEach/afterEach/afterAll)
-├── playwright.config.js          # Core Playwright config
-├── package.json
-├── README.md
-└── USAGE.md
-```
-
----
-
-## 7️⃣ Upcoming Enhancements
+## 6️⃣ Upcoming Enhancements
 
 - 🔗 Attach real Playwright report link in final Discord summary.
 - 📸 Element-level screenshots.
@@ -175,12 +151,6 @@ e2e-project/
 
 ---
 
-## 8️⃣ Changelog
+## 7️⃣ More
 
-- **v2.0.0**
-  - Added safe helpers.
-  - Added automatic screenshots on failures.
-  - Added HTML reporter integration.
-  - Improved Discord summary (progress bar + counts).
-- **v1.0.0**
-  - Initial project setup with Discord integration + sample tests.
+> For version history, see **[CHANGELOG.md](./CHANGELOG.md)**.

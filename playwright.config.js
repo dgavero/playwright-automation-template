@@ -41,11 +41,14 @@ const tags = process.env.TAGS || ''; // e.g., "smoke|samples"
 const threads = parseInt(process.env.THREADS || '4', 10); // Default to 4 threads
 
 export default defineConfig({
+  // 🧹 Run cleanup before each test run (wipes screenshots, reports, test-results)
+  globalSetup: './globalSetup.js',
+
   // Where Playwright looks for tests
   testDir: './tests',
 
-  // 🔹 Global setup: posts the Discord header + thread before tests
-  globalSetup: './helpers/discord/discordSetup.js',
+  // Default timeout for each test (in ms) → 60s instead of default 30s
+  timeout: 60000,
 
   // 🔹 Reporters:
   // - list: console output

@@ -31,6 +31,12 @@ It serves as a **living contract for how to write tests, structure helpers, and 
   - Throws error to stop test immediately.
 - `markPassed(message)` logs ✅ with optional message (only if enabled in `.env`).
 
+### ✅ Timeout Handling
+
+- Action-level timeouts (via safe helpers) → return `false`; tests decide whether to call `markFailed`.
+- Test-level timeouts (per-test budget, default 60s) → logged automatically as  
+  `"Test timed-out after {N}s."` with a screenshot if possible.
+
 ### ✅ Page Object Model (POM)
 
 - Page Object methods may call `markFailed` if they represent **reusable flows** (login, logout).
@@ -48,12 +54,14 @@ It serves as a **living contract for how to write tests, structure helpers, and 
 
 ---
 
-## 📦 Current Status (v2.0.0)
+## 📦 Current Status
 
 ### What’s Implemented
 
 - Safe helpers (`safeClick`, `safeInput`, `safeHover`, `safeNavigateToUrl`, `safeWaitForElementVisible`, `safeWaitForPageLoad`).
 - Screenshot-on-failure flow wired to `markFailed`.
+- Test-level timeout raised to **60s** (from default 30s).
+- Automatic cleanup of `screenshots/`, `.playwright-report/`, and `test-results/` before each run.
 - Page Object methods (OrangeLoginPage: `open`, `login`, `isOnDashboard`, `hasError`).
 - Reporting integration (currently Discord):
   - Suite header with env + tags.

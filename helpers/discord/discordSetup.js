@@ -1,8 +1,6 @@
 // Initializes the Discord run: posts header + creates thread, then shuts down Gateway.
 
-
 import { sendSuiteHeader, shutdownBot } from './discordBot.js';
-
 
 /**
  * Extracts the raw value passed to Playwright via --grep / -g.
@@ -11,9 +9,9 @@ import { sendSuiteHeader, shutdownBot } from './discordBot.js';
  * Returns the raw string or null if not present.
  */
 function extractRawGrepFromArgs() {
-  const idx = process.argv.findIndex(a => a === '--grep' || a === '-g');
+  const idx = process.argv.findIndex((a) => a === '--grep' || a === '-g');
   if (idx !== -1 && process.argv[idx + 1]) return process.argv[idx + 1];
-  const inline = process.argv.find(a => a.startsWith('--grep='));
+  const inline = process.argv.find((a) => a.startsWith('--grep='));
   if (inline) return inline.split('=')[1];
   return null;
 }
@@ -32,8 +30,11 @@ function prettifyGrep(raw) {
   const m = raw.match(/^\/(.+)\/[a-z]*$/i);
   const core = m ? m[1] : raw;
   const pretty = core.replace(/\(\?:/g, '(').replace(/[()]/g, '').trim();
-  const parts = pretty.split('|').map(s => s.trim()).filter(Boolean);
-  return parts.length > 1 ? parts.join(', ') : (pretty || 'all');
+  const parts = pretty
+    .split('|')
+    .map((s) => s.trim())
+    .filter(Boolean);
+  return parts.length > 1 ? parts.join(', ') : pretty || 'all';
 }
 
 /**
@@ -48,7 +49,10 @@ async function discordSetup() {
   const testEnv = process.env.TEST_ENV || 'LOCAL';
 
   // Prefer env TAGS for clarity (e.g., "samples|smoke"); fallback to CLI --grep if absent.
-  const raw = process.env.TAGS && process.env.TAGS.trim().length ? process.env.TAGS : extractRawGrepFromArgs();
+  const raw =
+    process.env.TAGS && process.env.TAGS.trim().length
+      ? process.env.TAGS
+      : extractRawGrepFromArgs();
   const grepLabel = prettifyGrep(raw);
 
   await sendSuiteHeader({

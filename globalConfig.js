@@ -25,7 +25,8 @@ test.afterAll(async () => {
 
 // Clear the page pointer after each test (defensive hygiene)
 test.afterEach(async ({ page }, testInfo) => {
-  if (testInfo.status === 'failed') {
+  // Post failure to Discord for both assertion failures and timeouts
+  if (testInfo.status !== 'passed') {
     await handleFailureAfterEach(page, testInfo);
   }
   clearCurrentPage();

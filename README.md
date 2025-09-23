@@ -18,6 +18,8 @@ End-to-end testing framework powered by **Playwright** with **Discord integratio
 - **Timeouts** centralized (`short`, `standard`, `long`, `extraLong`).
 - Full `.env` support for configuration.
 - Always generates an **HTML report** (`npx playwright show-report`).
+- Test-level timeout defaults to **60s** (configurable).
+- Pre-run cleanup of reports/screenshots/test-results.
 
 ---
 
@@ -76,6 +78,8 @@ See **[USAGE.md](./USAGE.md)** for:
 - Discord reporting flow
 - Upcoming enhancements
 
+> Looking for version history? See **[CHANGELOG.md](./CHANGELOG.md)**.
+
 ---
 
 ## 🧩 Project Structure
@@ -90,9 +94,9 @@ e2e-project/
 │   ├── testUtils.js
 │   ├── Timeouts.js
 ├── tests/
-│   ├── example.spec.js
-│   ├── example2.spec.js
-│   ├── sample3_orange_login.spec.js
+│   ├──
+│   ├──
+│   ├──
 ├── .env
 ├── globalConfig.js
 ├── playwright.config.js

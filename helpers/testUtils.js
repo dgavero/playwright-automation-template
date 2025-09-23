@@ -140,7 +140,18 @@ export function markFailed(reason) {
 + */
 export async function handleFailureAfterEach(page, testInfo) {
   const reasonFromMarkFailed = consumePendingFailureReason();
-  const reason = reasonFromMarkFailed || testInfo?.error?.message?.split('\n')[0] || 'Test failed.';
+  const raw = testInfo?.error?.message || '';
+  let reason;
+  if (reasonFromMarkFailed) {
+    reason = reasonFromMarkFailed;
+  } else if (testInfo.status === 'timedOut') {
+    // Short, generic message for whole-test timeouts
+    const ms = testInfo.timeout || 0;
+    const seconds = Math.round(ms / 1000);
+    reason = seconds ? `Test timed-out after ${seconds}s.` : 'Test timed-out.';
+  } else {
+    reason = raw.split('\n')[0] || 'Test failed.';
+  }
 
   let extraNotice = '';
   let filePath;
