@@ -5,7 +5,7 @@ import { markPassed, markFailed, safeWaitForElementVisible } from '../helpers/te
 const isProd = (process.env.TEST_ENV || 'LOCAL').toUpperCase() === 'PROD';
 
 test.describe('positive @samples', () => {
-  test('positive test case 1 @pos1', async ({ page }) => {
+  test('positive test case 1 @pos1 @all', async ({ page }) => {
     await page.goto('/');
 
     // Both example.com & playwright.dev have an <h1>
@@ -16,7 +16,7 @@ test.describe('positive @samples', () => {
     markPassed();
   });
 
-  test('positive test case 2 @pos2', async ({ page }) => {
+  test('positive test case 2 @pos2 @all', async ({ page }) => {
     await page.goto('/');
 
     // Pick a homepage CTA that exists per env
@@ -33,7 +33,7 @@ test.describe('positive @samples', () => {
 });
 
 test.describe('negative @samples', () => {
-  test('negative test case 1 @neg1', async ({ page }) => {
+  test('negative test case 1 @neg1 @all', async ({ page }) => {
     await page.goto('/');
 
     // Intentionally fail: element should NOT exist
@@ -45,7 +45,7 @@ test.describe('negative @samples', () => {
     markPassed();
   });
 
-  test('negative test case 2 @neg2', async ({ page }) => {
+  test('negative test case 2 @neg2 @all', async ({ page }) => {
     await page.goto('/');
 
     // Intentionally fail: wrong title expectation for both envs

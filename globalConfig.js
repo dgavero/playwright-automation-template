@@ -1,11 +1,18 @@
 // globalConfig.js
 import { test as base, expect } from '@playwright/test';
-import { setCurrentTestTitle, flushReports } from './helpers/testUtils.js';
+import {
+  setCurrentTestTitle,
+  setCurrentPage,
+  clearCurrentPage,
+  handleFailureAfterEach,
+  flushReports,
+} from './helpers/testUtils.js';
 
 export const test = base.extend({});
 
 test.beforeEach(async ({ page }, testInfo) => {
   setCurrentTestTitle(testInfo.title);
+  setCurrentPage(page);
   console.log(
     `🌐 Testing against: ${process.env.TEST_ENV || 'LOCAL'} (${page.context()._options.baseURL})`
   );
@@ -14,6 +21,14 @@ test.beforeEach(async ({ page }, testInfo) => {
 // ✅ Flush Discord posts at worker end
 test.afterAll(async () => {
   await flushReports();
+});
+
+// Clear the page pointer after each test (defensive hygiene)
+test.afterEach(async ({ page }, testInfo) => {
+  if (testInfo.status === 'failed') {
+    await handleFailureAfterEach(page, testInfo);
+  }
+  clearCurrentPage();
 });
 
 export { expect };

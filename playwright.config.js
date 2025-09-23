@@ -53,7 +53,7 @@ export default defineConfig({
   reporter: [['list'], ['./helpers/discord/discordReporter.js']],
   use: {
     baseURL, // ✅ Dynamic baseURL based on TEST_ENV
-    headless: true, // Always run headless in CI
+    headless: false, // Always run headless in CI
   },
   workers: threads, // Concurrency controlled by THREADS env
 

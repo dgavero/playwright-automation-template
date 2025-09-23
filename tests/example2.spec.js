@@ -6,7 +6,7 @@ const isProd = (process.env.TEST_ENV || 'LOCAL').toUpperCase() === 'PROD';
 
 /* ---------- POSITIVE ---------- */
 test.describe('positive 2 @samples', () => {
-  test('positive test case 3 @pos1', async ({ page }) => {
+  test('positive test case 3 @pos1 @all', async ({ page }) => {
     await page.goto('/');
 
     // Both example.com & playwright.dev have an <h1>
@@ -17,7 +17,7 @@ test.describe('positive 2 @samples', () => {
     markPassed();
   });
 
-  test('positive test case 4 @pos2', async ({ page }) => {
+  test('positive test case 4 @pos2 @all', async ({ page }) => {
     await page.goto('/');
 
     // Env-specific CTA that should exist
@@ -35,7 +35,7 @@ test.describe('positive 2 @samples', () => {
 
 /* ---------- NEGATIVE (intentional fails) ---------- */
 test.describe('negative 2 @samples2', () => {
-  test('negative test case 3 @neg1', async ({ page }) => {
+  test('negative test case 3 @neg1 @all', async ({ page }) => {
     await page.goto('/');
 
     // Intentionally fail: element should NOT exist
@@ -45,7 +45,7 @@ test.describe('negative 2 @samples2', () => {
     markPassed();
   });
 
-  test('negative test case 4 @neg2', async ({ page }) => {
+  test('negative test case 4 @neg2 @all', async ({ page }) => {
     await page.goto('/');
 
     // Intentionally fail: improbable text

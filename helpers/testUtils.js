@@ -30,6 +30,12 @@ const rest = TOKEN ? new REST({ version: '10' }).setToken(TOKEN) : null;
 // The currently executing test title (set by setCurrentTestTitle in test hooks)
 let currentTestTitle = null;
 
+// The currently active Playwright Page (set in test hooks)
+let currentPage = null;
+
+// Carries the human reason provided to markFailed(); consumed in afterEach
+let pendingFailureReason = null;
+
 // Outgoing message queue for thread posts (non-blocking ✅ / ❌)
 // - messageQueue: FIFO queue of message strings to send
 // - flushing: prevents overlapping flush loops
@@ -41,6 +47,27 @@ const pendingPosts = new Set();
 // Prevent duplicate ❌ posts for the same test (de-dupe by test title)
 const failedOnceByTitle = new Set();
 
+/**
+ * Capture a viewport screenshot to ./screenshots with a timestamp+title filename.
+ * Returns { path, filename } on success, or null on failure.
+ * (Future: element-only snapshots can be added here.)
+ */
+export async function safeScreenshot(page) {
+  try {
+    if (!page) return null;
+    const dir = path.resolve('screenshots');
+    fs.mkdirSync(dir, { recursive: true });
+    const ts = new Date().toISOString().replace(/[:]/g, '-').replace(/\..+$/, '');
+    const base = (currentTestTitle || 'test').replace(/[^a-z0-9-_]+/gi, '_').slice(0, 120);
+    const filename = `${ts}__${base}.png`;
+    const filePath = path.join(dir, filename);
+    await page.screenshot({ path: filePath }); // viewport (default)
+    return { path: filePath, filename };
+  } catch {
+    return null;
+  }
+}
+
 // -------------------- Public API -------------------- //
 /**
  * Sets the "current test title" so pass/fail helpers know what to post.
@@ -48,6 +75,25 @@ const failedOnceByTitle = new Set();
  */
 export function setCurrentTestTitle(title) {
   currentTestTitle = title;
+  pendingFailureReason = null;
+}
+
+export function setPendingFailureReason(reason) {
+  pendingFailureReason = typeof reason === 'string' ? reason : null;
+}
+
+export function consumePendingFailureReason() {
+  const r = pendingFailureReason;
+  pendingFailureReason = null;
+  return r;
+}
+
+// Track the active Playwright Page so markFailed() can take a screenshot without changing tests
+export function setCurrentPage(page) {
+  currentPage = page || null;
+}
+export function clearCurrentPage() {
+  currentPage = null;
 }
 
 /**
@@ -77,11 +123,36 @@ export function markFailed(reason) {
   // Enqueue only once per test title (avoid duplicate ❌ spam on multiple failures)
   if (!failedOnceByTitle.has(currentTestTitle)) {
     failedOnceByTitle.add(currentTestTitle);
-    enqueue(formatMsg('❌', currentTestTitle, reason));
+
+    // Hand the reason to afterEach; it will capture/+post the screenshot
+    setPendingFailureReason(reason);
   }
 
-  // Stop the current test immediately with a clear error message
+  // Fail the test so afterEach runs with status === 'failed'
   throw new Error(`[FAILED] ${currentTestTitle}: ${reason}`);
+}
+
+/**
++ * Called from afterEach when a test failed.
++ * - Uses the human reason from markFailed() if present, else testInfo.error.
++ * - Captures viewport screenshot.
++ * - Enqueues one Discord message with attachment (or a fallback line).
++ */
+export async function handleFailureAfterEach(page, testInfo) {
+  const reasonFromMarkFailed = consumePendingFailureReason();
+  const reason = reasonFromMarkFailed || testInfo?.error?.message?.split('\n')[0] || 'Test failed.';
+
+  let extraNotice = '';
+  let filePath;
+  const shot = await safeScreenshot(page);
+  if (shot && shot.path) filePath = shot.path;
+  else extraNotice = 'Unable to capture screenshot for this failure.';
+
+  enqueue({
+    content: formatMsg('❌', testInfo.title || currentTestTitle || 'Test', reason),
+    filePath,
+    extraNotice,
+  });
 }
 
 /**
@@ -124,8 +195,11 @@ function readThreadId() {
  * Enqueue a message for posting into the run thread.
  * - Schedules a flush (non-blocking) if not already flushing.
  */
-function enqueue(content) {
-  messageQueue.push(content);
+function enqueue(item) {
+  const normalized =
+    typeof item === 'string' ? { content: item } : item && item.content ? item : null;
+  if (!normalized) return;
+  messageQueue.push(normalized);
   scheduleFlush();
 }
 
@@ -158,9 +232,19 @@ async function flush() {
     }
 
     while (messageQueue.length > 0) {
-      const content = messageQueue.shift();
+      const { content, filePath, extraNotice } = messageQueue.shift();
+      let bodyContent = content;
+      if (!filePath && extraNotice) {
+        bodyContent = `${content}\n\n${extraNotice}`;
+      }
+
+      const options = { body: { content: bodyContent } };
+      if (filePath && fs.existsSync(filePath)) {
+        options.files = [{ name: path.basename(filePath), data: fs.readFileSync(filePath) }];
+      }
+
       // Post directly to the run thread (threadId is a channel id for the thread)
-      const p = rest.post(Routes.channelMessages(threadId), { body: { content } });
+      const p = rest.post(Routes.channelMessages(threadId), options);
       pendingPosts.add(p);
       await p.finally(() => pendingPosts.delete(p));
     }

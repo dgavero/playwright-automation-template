@@ -17,23 +17,27 @@ test.beforeEach(async ({}, testInfo) => {
 });
 
 test.describe('@orange OrangeHRM Login', () => {
-  test('Login with valid credentials', async ({ page }) => {
+  test('Login with valid credentials @all', async ({ page }) => {
     const login = new OrangeLoginPage(page);
     await login.open();
     await login.login(ORANGE_USER, ORANGE_PASS);
     await login.isOnDashboard();
+
+    // markFailed('Test only.');
     markPassed('Successfully logged in and saw dashboard');
   });
 
-  test('Invalid credentials should show login error', async ({ page }) => {
+  test('Invalid credentials should show login error @all', async ({ page }) => {
     const login = new OrangeLoginPage(page);
     await login.open();
     await login.login('wronguser', 'wrongpass');
     await login.hasError();
+
+    // markFailed('Test only.');
     markPassed('Error message displayed for invalid credentials');
   });
 
-  test('Logout from dashboard', async ({ page }) => {
+  test('Logout from dashboard @all', async ({ page }) => {
     // Login
     const login = new OrangeLoginPage(page);
     await login.open();
@@ -52,6 +56,8 @@ test.describe('@orange OrangeHRM Login', () => {
     // Verify we’re back on the login screen
     if (!(await safeWaitForElementVisible(page, login.username)))
       markFailed(`Login form not visible after logout.`);
+
+    // markFailed('Test only.');
     markPassed('Successfully logged out and returned to login page');
   });
 });
