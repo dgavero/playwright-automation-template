@@ -6,15 +6,14 @@ yarn-error.log*
 
 # Environment variables (contains tokens & URLs)
 .env
+.discord-run.json   # Discord thread metadata
 
-# Playwright outputs (auto-generated)
+# Playwright Outputs
 test-results/
 playwright-report/
 blob-report/
 trace.zip
-
-# Discord thread metadata
-.discord-run.json
+screenshots/
 
 # Logs
 logs/
@@ -28,5 +27,3 @@ logs/
 # OS-specific files
 *.DS_Store
 Thumbs.db
-
-

@@ -50,10 +50,14 @@ export default defineConfig({
   // 🔹 Reporters:
   // - list: console output
   // - discordReporter: live updates + final summary in Discord
-  reporter: [['list'], ['./helpers/discord/discordReporter.js']],
+  reporter: [
+    ['list'],
+    ['html', { outputFolder: '.playwright-report', open: 'never' }],
+    ['./helpers/discord/discordReporter.js'],
+  ],
   use: {
     baseURL, // ✅ Dynamic baseURL based on TEST_ENV
-    headless: false, // Always run headless in CI
+    headless: true, // Always run headless in CI
   },
   workers: threads, // Concurrency controlled by THREADS env
 
