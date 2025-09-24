@@ -10,10 +10,14 @@ yarn-error.log*
 
 # Playwright Outputs
 test-results/
+.playwright-report/
 playwright-report/
 blob-report/
 trace.zip
 screenshots/
+
+# Discord runtime state
+.discord-run.json
 
 # Logs
 logs/
