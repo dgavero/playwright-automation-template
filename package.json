@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "test": "playwright test",
+  "report:publish": "node scripts/publish-report.js"
   },
   "keywords": [],
   "author": "",
@@ -12,6 +13,7 @@
   "type": "commonjs",
   "devDependencies": {
     "@playwright/test": "^1.55.0",
+    "gh-pages": "^6.3.0",
     "prettier": "^3.6.2"
   },
   "dependencies": {
