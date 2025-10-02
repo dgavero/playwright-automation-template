@@ -36,18 +36,25 @@ npm install
 
 ### 1. Configure `.env`
 
+Create a `.env` file in the project root. Example:
+
 ```env
-DISCORD_BOT_TOKEN=your_token
-DISCORD_CHANNEL_ID=your_channel
+# --- Discord ---
+DISCORD_BOT_TOKEN=your_token_here
+DISCORD_CHANNEL_ID=your_channel_id_here
+DISCORD_LOG_PASSED=0   # Set to 1 if you want passed tests also logged
+REPORT_PUBLISH=1       # Set to 0 to skip publishing reports (useful offline)
 
+# --- Environment ---
+TEST_ENV=LOCAL         # LOCAL | ORANGE | PROD
+THREADS=4              # number of workers
+
+# --- Base URLs ---
 BASE_URL_LOCAL=https://example.com
-BASE_URL_PROD=https://playwright.dev
 BASE_URL_ORANGE=https://opensource-demo.orangehrmlive.com/
-
-TEST_ENV=LOCAL
-THREADS=4
-DISCORD_LOG_PASSED=0
+BASE_URL_PROD=https://playwright.dev
 ```
+See `.env.example` for a full template with placeholders.
 
 ### 2. Run All Tests
 

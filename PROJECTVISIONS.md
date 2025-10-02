@@ -79,20 +79,21 @@ It serves as a **living contract for how to write tests, structure helpers, and 
 ## 📝 To-Do List
 
 1. **Reporting Enhancements**
-   - Abstract the reporter so it can work with Slack, Teams, etc.
+   - Optional: abstract reporter so it can also support Slack/Teams in future.
+   - Add a propagation note in Discord summary (⚠️ “report may take ~1min to go live”).
 
-2. **Helper Expansion**
-   - Add `safeSelect`, `safeCheck/Uncheck`, `safeDragDrop`.
-   - Element-level screenshots (locator-only).
-
-3. **Flakiness Handling**
+2. **Flakiness Handling**
    - Configure retries for flaky tests.
    - Smarter wait strategies.
 
-4. **CI/CD Integration**
-   - Run tests automatically in pipelines.
+3. **CI/CD Integration**
+   - Run tests automatically in pipelines (GitHub Actions / Jenkins).
    - Upload Playwright HTML report as artifact.
-   - Post report link in final summary.
+   - Post report link in final summary (same as local).
+
+4. **Documentation**
+   - Add `.env.example` with placeholders.
+   - Expand README with flow diagram + screenshots of Discord reports.
 
 5. **Future Extensions**
    - Multi-channel support (Slack, Teams, Google Chat).
