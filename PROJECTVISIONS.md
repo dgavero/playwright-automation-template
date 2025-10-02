@@ -69,15 +69,16 @@ It serves as a **living contract for how to write tests, structure helpers, and 
   - Test summary (✅/❌/⚪).
   - Per-test logs inside a thread.
 - Prettier + VSCode formatting rules aligned.
-- HTML report always generated (`npx playwright show-report`).
+- HTML report:
+  - Auto-generated each run
+  - Auto-published to GitHub Pages
+  - Direct link added to final Discord summary
 
 ---
 
 ## 📝 To-Do List
 
 1. **Reporting Enhancements**
-   - Add final Playwright report link to summary message.
-   - Optionally hyperlink screenshots.
    - Abstract the reporter so it can work with Slack, Teams, etc.
 
 2. **Helper Expansion**

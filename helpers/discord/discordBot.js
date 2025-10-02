@@ -93,7 +93,7 @@ export function readRunMeta() {
  * Replace the header content with the final summary.
  * Uses the Gateway client (not REST) so it works even if we need richer capabilities later.
  */
-export async function appendSummary({ passed, failed, skipped }) {
+export async function appendSummary({ passed, failed, skipped, reportUrl }) {
   const meta = readRunMeta();
   if (!meta || !rest) return;
 
@@ -104,14 +104,16 @@ Tests completed ✅ 100% [${total}/${total}]
 📊 Test Summary
 ✅ Passed: ${passed}
 ❌ Failed: ${failed}
-⚪ Skipped: ${skipped}
+⚪ Skipped: ${skipped}`;
 
-🔗 More details on the test result can be checked here:
-<Playwright report link>`;
+  // Embed link to message for the HTML Report
+  const embeds = reportUrl
+    ? [{ description: `🔗 [Playwright HTML report is here](${reportUrl})` }]
+    : [];
 
   // Edit the same header message we created at setup time
   await rest.patch(Routes.channelMessage(meta.channelId, meta.headerMessageId), {
-    body: { content },
+    body: { content, embeds },
   });
 }
 

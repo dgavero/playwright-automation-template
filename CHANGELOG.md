@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.2.0]
+
+### Added
+- Automatic publishing of Playwright HTML reports to **GitHub Pages** (with timestamped runs).
+- Final Discord summary now includes a direct 🔗 link to the published HTML report.
+
+---
+
+### Changed
+- Discord summary simplified: always a single final message with ✅/❌/⚪ counts + report link.
+
 ## [2.1.0]
 
 ### Added

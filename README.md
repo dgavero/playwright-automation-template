@@ -20,6 +20,7 @@ End-to-end testing framework powered by **Playwright** with **Discord integratio
 - Always generates an **HTML report** (`npx playwright show-report`).
 - Test-level timeout defaults to **60s** (configurable).
 - Pre-run cleanup of reports/screenshots/test-results.
+- Auto-publish HTML reports to GitHub Pages with direct link in Discord summary.
 
 ---
 

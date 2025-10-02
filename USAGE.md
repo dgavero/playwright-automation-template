@@ -1,6 +1,6 @@
 # 📘 Usage Guide — E2E Playwright + Discord Reporter
 
-> **Version**: v2.0.0  
+> **Version**: v2.2.0  
 > **Purpose**: Automated Playwright tests + Discord integration for real-time reporting with screenshots on failure.
 
 ---
@@ -92,11 +92,8 @@ DISCORD_LOG_PASSED=0
 
 4. **Final Summary**
    - Header replaced with final counts.
-   - Adds static line (for now):
-     ```
-     🔗 More details on the test result can be checked here:
-     <Playwright report link>
-     ```
+   - Adds a direct link:
+     - If published → 🔗 Playwright HTML report on GitHub Pages
 
 ---
 

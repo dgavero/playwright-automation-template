@@ -15,6 +15,7 @@ playwright-report/
 blob-report/
 trace.zip
 screenshots/
+reports/
 
 # Discord runtime state
 .discord-run.json

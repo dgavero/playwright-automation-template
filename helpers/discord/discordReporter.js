@@ -5,6 +5,7 @@
  */
 
 import { appendSummary, shutdownBot, editRunningHeader } from './discordBot.js';
+import { spawnSync } from 'node:child_process';
 
 class DiscordReporter {
   constructor() {
@@ -60,12 +61,29 @@ class DiscordReporter {
    * - Closes the Gateway client (clean shutdown).
    */
   async onEnd() {
-    await appendSummary({
-      passed: this.passed,
-      failed: this.failed,
-      skipped: this.skipped,
-    });
-    await shutdownBot();
+
+    // At test suite end:
+    // - Auto-publishes Playwright HTML report to GitHub Pages (unless disabled via REPORT_PUBLISH=0)
+    // - Parses machine-readable "REPORT_URL=..." line
+    // - Passes link into appendSummary so it appears in final Discord message
+     let reportUrl = null;
+     if (process.env.REPORT_PUBLISH !== '0') {
+       try {
+         const res = spawnSync(process.execPath, ['scripts/publish-report.js'], { encoding: 'utf-8' });
+         const out = (res.stdout || '') + (res.stderr || '');
+         const m = out.match(/REPORT_URL=(\S+)/);
+         if (m) reportUrl = m[1];
+       } catch (_) {
+         // ignore; we'll just fall back to local path in the summary
+       }
+     }
+     await appendSummary({
+       passed: this.passed,
+       failed: this.failed,
+       skipped: this.skipped,
+       reportUrl, // let the bot render a direct link if available
+     });
+     await shutdownBot();
   }
 }
 
