@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.2.1]
+
+### Added
+- `.env.example` file with placeholders for easy setup.
+- Updated README and USAGE to document `REPORT_PUBLISH` and all env vars.
+
+### Changed
+- Updated PROJECTVISIONS.md To-Do list (safe helpers marked complete).
+
+---
+
 ## [2.2.0]
 
 ### Added

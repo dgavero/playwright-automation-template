@@ -1,6 +1,6 @@
 # 📘 Usage Guide — E2E Playwright + Discord Reporter
 
-> **Version**: v2.2.0  
+> **Version**: v2.2.1  
 > **Purpose**: Automated Playwright tests + Discord integration for real-time reporting with screenshots on failure.
 
 ---
@@ -45,22 +45,8 @@ TAGS='(?!.*@secret)' npx playwright test  # run everything except @secret
 ### `.env`
 
 ```env
-DISCORD_BOT_TOKEN=your_token
-DISCORD_CHANNEL_ID=your_channel
-
-BASE_URL_LOCAL=https://example.com
-BASE_URL_PROD=https://playwright.dev
-BASE_URL_ORANGE=https://opensource-demo.orangehrmlive.com/
-
-TEST_ENV=LOCAL
-THREADS=4
-DISCORD_LOG_PASSED=0
+Copy the provided `.env.example` file to `.env` in the project root and update it with your own values.  
 ```
-
-- `TEST_ENV`: Which base URL to test (`LOCAL` / `PROD` / `ORANGE`).
-- `THREADS`: Concurrency (workers). Defaults to **4** if not set.
-- `DISCORD_LOG_PASSED=1`: Logs ✅ passes. Default `0` (log only failures).
-- Defaults to **LOCAL** if not set.
 
 ---
 
@@ -140,11 +126,12 @@ Override with `Timeouts.short`, `long`, `extraLong`.
 
 ## 6️⃣ Upcoming Enhancements
 
-- 🔗 Attach real Playwright report link in final Discord summary.
 - 📸 Element-level screenshots.
 - 🔄 Retry strategy for flaky tests.
-- ⚙️ CI/CD integration (upload HTML report as artifact).
-- ➕ More safe helpers (`safeSelect`, `safeCheck`).
+- ⚙️ CI/CD integration (Auto-run tests)
+- Parallelism tuning per suite.
+- Central selector registry for shared locators
+- API Tests
 
 ---
 
