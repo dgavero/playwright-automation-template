@@ -124,17 +124,6 @@ Override with `Timeouts.short`, `long`, `extraLong`.
 
 ---
 
-## 6️⃣ Upcoming Enhancements
-
-- 📸 Element-level screenshots.
-- 🔄 Retry strategy for flaky tests.
-- ⚙️ CI/CD integration (Auto-run tests)
-- Parallelism tuning per suite.
-- Central selector registry for shared locators
-- API Tests
-
----
-
-## 7️⃣ More
+## 6️⃣ More
 
 > For version history, see **[CHANGELOG.md](./CHANGELOG.md)**.

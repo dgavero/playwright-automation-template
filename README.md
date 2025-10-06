@@ -1,4 +1,4 @@
-# 🧪 Playwright + Discord Reporter
+# 🎭 Playwright Automation Template
 
 End-to-end testing framework powered by **Playwright** with **Discord integration** for real-time reporting and screenshots on failures.
 
@@ -35,26 +35,8 @@ npm install
 ## 🛠 Quick Start
 
 ### 1. Configure `.env`
+Copy `.env.example` to `.env` and fill in your values.
 
-Create a `.env` file in the project root. Example:
-
-```env
-# --- Discord ---
-DISCORD_BOT_TOKEN=your_token_here
-DISCORD_CHANNEL_ID=your_channel_id_here
-DISCORD_LOG_PASSED=0   # Set to 1 if you want passed tests also logged
-REPORT_PUBLISH=1       # Set to 0 to skip publishing reports (useful offline)
-
-# --- Environment ---
-TEST_ENV=LOCAL         # LOCAL | ORANGE | PROD
-THREADS=4              # number of workers
-
-# --- Base URLs ---
-BASE_URL_LOCAL=https://example.com
-BASE_URL_ORANGE=https://opensource-demo.orangehrmlive.com/
-BASE_URL_PROD=https://playwright.dev
-```
-See `.env.example` for a full template with placeholders.
 
 ### 2. Run All Tests
 

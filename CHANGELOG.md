@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.2.3]
+
+### Changed
+- Cleaned up documentation to remove duplication:
+  - `.env` configuration is now centralized in `.env.example`.
+  - README.md Quick Start now points directly to `.env.example` instead of duplicating values.
+  - Confirmed PROJECTVISIONS.md and USAGE.md contain only roadmap and usage details respectively.
+- Ensured all markdown files (README, USAGE, PROJECTVISIONS, CHANGELOG) are in sync with v2.2.x features.
+
+---
+
+## [2.2.2]
+- Nothing much. Just missed update in changelog
+
+---
+
 ## [2.2.1]
 
 ### Added
