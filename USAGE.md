@@ -1,16 +1,22 @@
 # 📘 Usage Guide — E2E Playwright + Discord Reporter
 
-> **Version**: v2.2.1  
+> **Version**: v2.2.4  
 > **Purpose**: Automated Playwright tests + Discord integration for real-time reporting with screenshots on failure.
 
 ---
 
 ## 1️⃣ Running Tests
 
-### Run All Tests
-
+### Run by project
 ```bash
+# All projects (default, respects TAGS)
 npx playwright test
+
+# Only UI/E2E
+npx playwright test --project=e2e
+
+# Only API
+npx playwright test --project=api
 ```
 
 ### Run on a Specific Environment

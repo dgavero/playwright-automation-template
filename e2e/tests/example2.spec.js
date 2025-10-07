@@ -1,6 +1,6 @@
 // tests/example2.spec.js
-import { test } from '../globalConfig.js';
-import { markPassed, markFailed, safeWaitForElementVisible } from '../helpers/testUtils.js';
+import { test } from '../../e2e/globalConfig.ui.js';
+import { markPassed, markFailed, safeWaitForElementVisible } from '../../helpers/testUtils.js';
 
 const isProd = (process.env.TEST_ENV || 'LOCAL').toUpperCase() === 'PROD';
 

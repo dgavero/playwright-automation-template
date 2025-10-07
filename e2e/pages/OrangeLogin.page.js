@@ -1,4 +1,4 @@
-import { markFailed } from '../helpers/testUtils.js';
+import { markFailed } from '../../helpers/testUtils.js';
 import {
   safeClick,
   safeInput,
@@ -6,7 +6,7 @@ import {
   safeWaitForPageLoad,
   safeWaitForElementVisible,
   getLastError,
-} from '../helpers/testUtils.js';
+} from '../../helpers/testUtils.js';
 
 export default class OrangeLoginPage {
   constructor(page) {

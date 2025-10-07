@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.2.4]
+
+### Changed
+- Restructured repository into **projects**:
+  - **`e2e/`** for UI/browser tests (moved `globalConfig` → `e2e/globalConfig.ui.js`, `Timeouts.js`, pages & specs).
+  - **`api/`** scaffold for future API tests.
+- Updated `playwright.config.js` to define **projects** and point to `./e2e/tests` and `./api/tests`.
+- Updated docs to show `--project=e2e|api` usage and new project tree.
+
+
+---
+
 ## [2.2.3]
 
 ### Changed

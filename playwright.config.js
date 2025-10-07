@@ -44,8 +44,11 @@ export default defineConfig({
   // 🧹 Run cleanup before each test run (wipes screenshots, reports, test-results)
   globalSetup: './globalSetup.js',
 
-  // Where Playwright looks for tests
-  testDir: './tests',
+  // Where Playwright looks for tests (split projects)
+  projects: [
+    { name: 'e2e', testDir: './e2e/tests' },
+    { name: 'api', testDir: './api/tests' },
+  ],
 
   // Default timeout for each test (in ms) → 60s instead of default 30s
   timeout: 60000,

@@ -1,4 +1,4 @@
-// globalConfig.js
+// globalConfig.ui.js
 import { test as base, expect } from '@playwright/test';
 import {
   setCurrentTestTitle,
@@ -6,7 +6,7 @@ import {
   clearCurrentPage,
   handleFailureAfterEach,
   flushReports,
-} from './helpers/testUtils.js';
+} from '../helpers/testUtils.js';
 
 export const test = base.extend({});
 

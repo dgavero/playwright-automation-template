@@ -92,7 +92,7 @@ It serves as a **living contract for how to write tests, structure helpers, and 
    - Post report link in final summary (same as local).
 
 4. **Documentation**
-   - Add `.env.example` with placeholders.
+   - Keep `.env.example` up to date.
    - Expand README with flow diagram + screenshots of Discord reports.
 
 5. **Future Extensions**

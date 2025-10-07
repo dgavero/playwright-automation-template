@@ -1,5 +1,5 @@
 // test for OrangeHRM
-import { test, expect } from '../globalConfig.js';
+import { test, expect } from '../../e2e/globalConfig.ui.js';
 import OrangeLoginPage from '../pages/OrangeLogin.page.js';
 import {
   setCurrentTestTitle,
@@ -7,7 +7,7 @@ import {
   markFailed,
   safeClick,
   safeWaitForElementVisible,
-} from '../helpers/testUtils.js';
+} from '../../helpers/testUtils.js';
 
 const ORANGE_USER = process.env.ORANGE_USER || 'Admin';
 const ORANGE_PASS = process.env.ORANGE_PASS || 'admin123';

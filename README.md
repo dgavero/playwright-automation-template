@@ -76,23 +76,26 @@ See **[USAGE.md](./USAGE.md)** for:
 
 ```
 e2e-project/
+├── e2e/                     # UI / browser tests
+│   ├── pages/
+│   ├── tests/
+│   ├── globalConfig.ui.js   # UI-only hooks (uses page)
+│   └── Timeouts.js
+├── api/                     # API tests (scaffold)
+│   └── tests/
 ├── helpers/
-│   ├── discord/
-│   │   ├── discordBot.js
-│   │   ├── discordReporter.js
-│   │   ├── discordSetup.js
-│   ├── testUtils.js
-│   ├── Timeouts.js
-├── tests/
-│   ├──
-│   ├──
-│   ├──
-├── .env
-├── globalConfig.js
-├── playwright.config.js
-├── package.json
-├── README.md
-└── USAGE.md
+│   └── discord/
+│       ├── discordBot.js
+│       ├── discordReporter.js
+│       └── discordSetup.js
+├── scripts/
+│   └── publish-report.js
+├── reports/                 # generated; published to gh-pages (gitignored)
+├── globalSetup.js
+├── playwright.config.js     # defines projects: e2e, api
+├── .env / .env.example
+├── README.md / USAGE.md / CHANGELOG.md / PROJECTVISIONS.md
+└── package.json
 ```
 
 ---
