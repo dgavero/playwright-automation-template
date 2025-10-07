@@ -81,8 +81,12 @@ e2e-project/
 │   ├── tests/
 │   ├── globalConfig.ui.js   # UI-only hooks (uses page)
 │   └── Timeouts.js
+│   └── helpers/
+│       └── testUtilsUI.js   # UI-only safe helpers
 ├── api/                     # API tests (scaffold)
 │   └── tests/
+│   └── helpers/
+│       └── testUtilsAPI.js  # API-only safe helpers
 ├── helpers/
 │   └── discord/
 │       ├── discordBot.js

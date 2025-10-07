@@ -114,6 +114,7 @@ if (!(await safeWaitForElementVisible(page, '#loginBtn'))) {
 
 ## 5️⃣ Safe Helpers
 
+### UI Helpers `e2e/helpers/testUtilsUI.js`
 All return `true/false` instead of throwing.  
 If `false`, call `markFailed()` with your human context.
 
@@ -128,6 +129,11 @@ If `false`, call `markFailed()` with your human context.
 Timeouts default to `Timeouts.standard` (15s).  
 Override with `Timeouts.short`, `long`, `extraLong`.
 
+### API Helpers (`api/helpers/testUtilsAPI.js`)
+Currently scaffolded. Planned helpers will include:
+- `safeApiPost(request, url, data, options?)`
+- `safeApiGet(request, url, options?)`
+These will mirror the UI style (return `true/false` and stash error details).
 ---
 
 ## 6️⃣ More

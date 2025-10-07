@@ -6,7 +6,7 @@ import {
   clearCurrentPage,
   handleFailureAfterEach,
   flushReports,
-} from '../helpers/testUtils.js';
+} from '../e2e/helpers/testUtilsUI.js';
 
 export const test = base.extend({});
 

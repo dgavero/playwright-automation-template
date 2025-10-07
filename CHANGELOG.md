@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+
+ ## [2.2.5]
+
+### Changed
+  - Renamed `testUtils.js` → `testUtilsUI.js` under `e2e/helpers/`.
+  - Added `api/helpers/testUtilsAPI.js` as a scaffold for upcoming API-safe helpers.
+  - Updated `playwright.config.js` to reflect new `e2e` and `api` projects.
+  - Synced README.md and USAGE.md:
+    - Project tree now lists both helper files.
+    - Usage docs clarify **UI helpers** vs. **API helpers** sections.
+
+---
+
 ## [2.2.4]
 
 ### Changed
@@ -10,7 +23,6 @@ All notable changes to this project will be documented in this file.
   - **`api/`** scaffold for future API tests.
 - Updated `playwright.config.js` to define **projects** and point to `./e2e/tests` and `./api/tests`.
 - Updated docs to show `--project=e2e|api` usage and new project tree.
-
 
 ---
 

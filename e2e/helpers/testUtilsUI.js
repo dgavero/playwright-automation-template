@@ -16,7 +16,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { REST, Routes } from 'discord.js';
-import { Timeouts } from '../e2e/Timeouts';
+import { Timeouts } from '../Timeouts';
 
 /*
  *  Shared run metadata & REST client (used to post to the per-run thread)

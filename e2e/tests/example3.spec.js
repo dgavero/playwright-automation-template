@@ -7,7 +7,7 @@ import {
   markFailed,
   safeClick,
   safeWaitForElementVisible,
-} from '../../helpers/testUtils.js';
+} from '../helpers/testUtilsUI.js';
 
 const ORANGE_USER = process.env.ORANGE_USER || 'Admin';
 const ORANGE_PASS = process.env.ORANGE_PASS || 'admin123';
