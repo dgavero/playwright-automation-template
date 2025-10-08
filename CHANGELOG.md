@@ -2,8 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.0]
 
- ## [2.2.5]
+### Added
+- **Env-based project selection**: set `PROJECT=api` or `PROJECT=e2e,api`. Empty/unset runs **both**.
+- **Case-insensitive, tokenized tags**: `TAGS='smoke|regression'` matches `@smoke` / `@regression` in any case and avoids `smoke1`.
+- **API fixtures baseline** (`api/globalConfig.api.js`) to init/teardown an API client per test.
+
+### Changed
+- **Discord header titles & icons** now reflect selected projects:
+  - **E2E only** → `🌐 End2End Test Suite`
+  - **API only** → `🧭 API Test Suite`
+  - **Both** → `🛠️ End2End & API Test Suites`
+- Updated **USAGE.md** and **README.md** samples
+
+---
+
+## [2.2.5]
 
 ### Changed
   - Renamed `testUtils.js` → `testUtilsUI.js` under `e2e/helpers/`.

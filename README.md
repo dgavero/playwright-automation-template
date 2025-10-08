@@ -13,7 +13,8 @@ End-to-end testing framework powered by **Playwright** with **Discord integratio
   - Dedicated Discord **thread per run**.
   - ❌ Failures log screenshots inline.
   - Optional ✅ pass logging.
-- **Tag-based filtering** (`TAGS`).
+- **Case-insensitive, tokenized tags**: `TAGS='smoke|regression'` matches `@smoke` / `@regression` regardless of case; won’t match `smoke1`.
+- **Project selection via env**: `PROJECT=api` or `PROJECT=e2e,api` (unset = run both).
 - **Safe helpers** that return booleans instead of throwing.
 - **Timeouts** centralized (`short`, `standard`, `long`, `extraLong`).
 - Full `.env` support for configuration.
@@ -38,24 +39,11 @@ npm install
 Copy `.env.example` to `.env` and fill in your values.
 
 
-### 2. Run All Tests
+### 2. Run Sample Test
 
 ```bash
-npx playwright test
+TAGS='samples' npx playwright test
 ```
-
-### 3. Run Specific Environment
-
-```bash
-TEST_ENV=PROD npx playwright test
-```
-
-### 4. Run Specific Tags
-
-```bash
-TAGS='@samples' npx playwright test
-```
-
 ---
 
 ## 📘 Documentation
@@ -96,7 +84,7 @@ e2e-project/
 │   └── publish-report.js
 ├── reports/                 # generated; published to gh-pages (gitignored)
 ├── globalSetup.js
-├── playwright.config.js     # defines projects: e2e, api
+├── playwright.config.js     # defines projects: e2e, api (with PROJECT filter)
 ├── .env / .env.example
 ├── README.md / USAGE.md / CHANGELOG.md / PROJECTVISIONS.md
 └── package.json

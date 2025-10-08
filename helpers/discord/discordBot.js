@@ -53,7 +53,7 @@ export async function sendSuiteHeader({ suiteName, env, grep }) {
 
   // Compose the immutable "title" that we keep at the top of the header.
   // `env` comes from TEST_ENV; `grep` is your tag/filter summary shown in the header.
-  const title = `🧪 End2End Test Suite: ${env} | ${grep || 'all'}`;
+  const title = `${suiteName}: ${env} | ${grep || 'all'}`;
 
   // 1) Post the header message (this message gets edited throughout the run).
   const headerMessage = await channel.send({ content: title });

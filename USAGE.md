@@ -1,31 +1,38 @@
 # 📘 Usage Guide — E2E Playwright + Discord Reporter
 
-> **Version**: v2.2.4  
+> **Version**: v3.0.0  
 > **Purpose**: Automated Playwright tests + Discord integration for real-time reporting with screenshots on failure.
 
 ---
 
 ## 1️⃣ Running Tests
 
-### Run by project
-```bash
-# All projects (default, respects TAGS)
-npx playwright test
-
-# Only UI/E2E
-npx playwright test --project=e2e
-
-# Only API
-npx playwright test --project=api
-```
-
-### Run on a Specific Environment
+### Run Specific Environment
 
 ```bash
 TEST_ENV=PROD npx playwright test
-TEST_ENV=ORANGE npx playwright test
 ```
 
+### Run Specific Tags
+
+```bash
+TAGS='samples' npx playwright test
+```
+
+### Run by Project (via env)
+```bash
+# Only API
+PROJECT=api npx playwright test
+# Only E2E
+PROJECT=e2e npx playwright test
+# Multiple
+PROJECT=e2e,api npx playwright test
+```
+
+### Run with Configs
+```bash
+TEST_ENV=ORANGE THREADS=4 TAGS='all' PROJECT=e2e,api  npx playwright test
+```
 ### Filter by Tags
 
 Tag tests with `@tags` in `describe` or `test` titles:
@@ -39,8 +46,8 @@ test.describe('positive @samples @regression', () => {
 Examples:
 
 ```bash
-TAGS='@samples' npx playwright test        # run all @samples tests
-TAGS='@pos1|@neg2' npx playwright test    # run specific tags
+TAGS='samples' npx playwright test        # run all @samples tests
+TAGS='pos1|neg2' npx playwright test    # run specific tags
 TAGS='(?!.*@secret)' npx playwright test  # run everything except @secret
 ```
 

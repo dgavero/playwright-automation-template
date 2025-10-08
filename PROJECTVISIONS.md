@@ -73,6 +73,7 @@ It serves as a **living contract for how to write tests, structure helpers, and 
   - Auto-generated each run
   - Auto-published to GitHub Pages
   - Direct link added to final Discord summary
+- **Env-driven runs**: `PROJECT=api|e2e,api` to select projects; case-insensitive, tokenized `TAGS`.
 
 ---
 

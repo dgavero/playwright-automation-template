@@ -38,6 +38,54 @@ function prettifyGrep(raw) {
 }
 
 /**
+ * Extracts projects from CLI, e.g.:
+ *   --project e2e   --project api
+ *   --project=e2e,api
+ */
+function extractProjectsFromArgs() {
+  const set = new Set();
+  for (let i = 0; i < process.argv.length; i++) {
+    const a = process.argv[i];
+    if (a === '--project' && process.argv[i + 1]) {
+      process.argv[i + 1].split(',').forEach((p) => set.add(p.trim().toLowerCase()));
+      i++;
+    } else if (a.startsWith('--project=')) {
+      a.split('=')[1]
+        .split(',')
+        .forEach((p) => set.add(p.trim().toLowerCase()));
+    }
+  }
+  return set;
+}
+
+/**
+ * Resolves which projects are intended to run based on env (PROJECT/PROJECTS)
+ * and CLI (--project). If none specified → default to BOTH.
+ */
+function resolveProjectSet() {
+  const set = new Set();
+  const envVal = (process.env.PROJECT || process.env.PROJECTS || '').trim();
+  if (envVal) {
+    envVal.split(',').forEach((p) => set.add(p.trim().toLowerCase()));
+  }
+  const cli = extractProjectsFromArgs();
+  cli.forEach((p) => set.add(p));
+  return set; // may be empty => treat as BOTH
+}
+
+// Return suite title based on selected projects
+function suiteNameFromProjects(projectsSet) {
+  if (!projectsSet || projectsSet.size === 0) return '🛠️ End2End & API Test Suites';
+  const hasE2E = projectsSet.has('e2e');
+  const hasAPI = projectsSet.has('api');
+  if (hasE2E && hasAPI) return '🛠️ End2End & API Test Suites';
+  if (hasE2E) return '🌐 End2End Test Suite';
+  if (hasAPI) return '🧭 API Test Suite';
+  return 'Test Suite';
+}
+
+
+/**
  * Global setup for the Discord dashboard:
  * - Determines the environment label (TEST_ENV or "LOCAL").
  * - Chooses the visible "grep/tags" label:
@@ -55,8 +103,12 @@ async function discordSetup() {
       : extractRawGrepFromArgs();
   const grepLabel = prettifyGrep(raw);
 
+  // Compute the suite title based on which projects are running
+  const projects = resolveProjectSet();
+  const suiteName = suiteNameFromProjects(projects);
+
   await sendSuiteHeader({
-    suiteName: 'End2End Test Suite',
+    suiteName,
     env: testEnv,
     grep: grepLabel,
   });
