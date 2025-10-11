@@ -1,6 +1,6 @@
 # 📘 Usage Guide — E2E Playwright + Discord Reporter
 
-> **Version**: v3.0.0  
+> **Version**: v3.0.1  
 > **Purpose**: Automated Playwright tests + Discord integration for real-time reporting with screenshots on failure.
 
 ---
@@ -68,7 +68,7 @@ Copy the provided `.env.example` file to `.env` in the project root and update i
 ### What Happens During a Run
 
 1. **Suite Start**
-   - Posts header message (`🧪 End2End Test Suite: ENV | tags`).
+   - Posts header message (project-aware title & icon, e.g., `🧭 End2End Test Suite` or `🔌 API Test Suite`): `ENV | tags`.
    - Creates a dedicated thread for test logs.
    - Shows `0% [0/N]` progress bar + empty summary.
 
@@ -87,6 +87,8 @@ Copy the provided `.env.example` file to `.env` in the project root and update i
 3. **Per-Test**
    - `markPassed()` → ✅ optional (only if DISCORD_LOG_PASSED=1).
    - `markFailed(reason)` → ❌ always posted, with screenshot attached.
+   - **API**:
+     - On any failed assertion (hard or soft), a ❌ is posted **immediately** with a **clean Error/Expected/Received snippet**
    - Whole-test timeouts are logged as: **“Test timed-out after {N}s.”**
 
 4. **Final Summary**

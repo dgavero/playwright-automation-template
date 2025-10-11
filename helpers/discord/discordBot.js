@@ -213,3 +213,26 @@ export async function shutdownBot() {
  *    - Current approach is perfectly fine for small/medium suites (your case).
  *    - Revisit this list once you approach ~200+ tests or see 429s / flaky counts.
  */
+
+
+
+// =============================================================
+// ========== API Specific Helpers (for test failure logs) =====
+// =============================================================
+/**
+ * Post a compact API failure snippet to the run thread.
+ * - snippet: cleaned lines (Error / Expected / Received)
+ */
+export async function sendAPIFailure({ title, where, snippet }) {
+  const meta = readRunMeta();
+  if (!meta || !rest || !meta.threadId) return; // bail if no thread yet
+
+  const content = [
+    `❌ **${title}**`,
+    '```',
+    (snippet || '').trim().slice(0, 1400),
+    '```',
+  ].join('\n');
+
+  await rest.post(Routes.channelMessages(meta.threadId), { body: { content } });
+}

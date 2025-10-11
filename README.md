@@ -11,7 +11,8 @@ End-to-end testing framework powered by **Playwright** with **Discord integratio
   - Suite headers with environment + tags.
   - Live progress bar with ✅/❌/⚪ summary.
   - Dedicated Discord **thread per run**.
-  - ❌ Failures log screenshots inline.
+  - ❌ **E2E**: Failures log screenshots inline (with context image).
+  - ❌ **API**: Failures post clean **Error / Expected / Received** snippets (no file paths).
   - Optional ✅ pass logging.
 - **Case-insensitive, tokenized tags**: `TAGS='smoke|regression'` matches `@smoke` / `@regression` regardless of case; won’t match `smoke1`.
 - **Project selection via env**: `PROJECT=api` or `PROJECT=e2e,api` (unset = run both).

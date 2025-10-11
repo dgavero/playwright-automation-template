@@ -1,11 +1,15 @@
 /**
- * Custom Playwright reporter for Discord integration.
- * - Shows live progress updates (via REST) as tests run.
- * - Posts the final summary to Discord once all tests complete.
- */
++ * Custom Playwright reporter for Discord integration.
++ * - Live progress header updates after every test (REST).
++ * - API failures: enqueue compact snippets immediately in onTestEnd
++ *   (the API helper auto-flushes ~100ms later, so messages appear per-test).
++ * - Final summary appended once all tests complete.
++ */
 
-import { appendSummary, shutdownBot, editRunningHeader } from './discordBot.js';
 import { spawnSync } from 'node:child_process';
+import { appendSummary, shutdownBot, editRunningHeader } from './discordBot.js';
+import { flushApiReports, extractApiFailureSnippet, enqueueApiFailure } from '../../api/helpers/testUtilsAPI.js';
+
 
 class DiscordReporter {
   constructor() {
@@ -44,7 +48,15 @@ class DiscordReporter {
 
     if (result.status === 'passed') this.passed += 1;
     else if (result.status === 'skipped') this.skipped += 1;
-    else this.failed += 1;
+    else {
+      this.failed += 1;
+      // Post compact API failure snippet (only for API project)
+      const isApi = (test.parent?.project()?.name || '').toLowerCase() === 'api';
+      if (isApi) {
+        const snippet = extractApiFailureSnippet(result);  // strips ANSI; picks Error/Expected/Received
+        enqueueApiFailure({ title: test.title, snippet });  // scheduleFlush() runs in the helper
+      }
+    }
 
     await editRunningHeader({
       completed: this.completed,
@@ -77,6 +89,10 @@ class DiscordReporter {
          // ignore; we'll just fall back to local path in the summary
        }
      }
+
+    // Ensure queued API failure messages are posted before the final summary.
+    try { await flushApiReports(); } catch (e) { console.error('[API Reporter] flush failed', e); }
+
      await appendSummary({
        passed: this.passed,
        failed: this.failed,

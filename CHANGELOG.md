@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+# [3.0.1]
+
+### Changed
+- **API failures** now post to Discord **per test (immediately)** with a **cleaned Error/Expected/Received snippet** (ANSI-stripped) and **no file paths**.
+- Reporter polish: removed duplicate ❌ in API logs; clarified comments and flow.
+
+
+
 ## [3.0.0]
 
 ### Added
