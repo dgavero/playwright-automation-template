@@ -139,10 +139,9 @@ Timeouts default to `Timeouts.standard` (15s).
 Override with `Timeouts.short`, `long`, `extraLong`.
 
 ### API Helpers (`api/helpers/testUtilsAPI.js`)
-Currently scaffolded. Planned helpers will include:
-- `safeApiPost(request, url, data, options?)`
-- `safeApiGet(request, url, options?)`
-These will mirror the UI style (return `true/false` and stash error details).
+Use Playwright’s native assertions (`expect` / `expect.soft`) for API tests.
+For GraphQL, use the provided **`safeGraphQL`** wrapper in `api/helpers/testUtilsAPI.js`
+to normalize transport (HTTP) vs GraphQL resolver errors without throwing.
 ---
 
 ## 6️⃣ More

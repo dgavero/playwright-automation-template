@@ -121,3 +121,37 @@ The framework is designed to be:
 - **Actionable** (failures are obvious and reproducible).
 - **Shareable** (any channel can follow progress in real time).
 - **Future-proof** (reporting integrations can grow beyond Discord).
+
+
+---
+
+## Final TODO Checklist
+
+### 1) Reporting & Discord Improvements
+- [ ] Multi-channel or alternative notification support (Slack / Teams etc).
+- [ ] Optional batching for large failure bursts (group multiple failures in one message).
+- [ ] Include execution duration & timestamp per test in failure snippets.
+- [ ] Add “report propagation delay” note in final summary (clarify async posts).
+- [ ] Investigate `REPORT_PUBLISH=0` behavior — ensure reports are **not posted to Discord** when disabled.
+
+### 2) CI/CD Integration
+- [ ] GitHub Actions workflow:
+  - Run E2E + API (matrix or env-driven).
+- [ ] Secrets handling for `DISCORD_BOT_TOKEN` and envs.
+- [ ] Add one-click “Retry Failed Tests” feature in CI (e.g., Jenkins/GitHub Actions):
+  - Collect failed test IDs from last run.
+  - Trigger a rerun for only those tests (using tags or IDs).
+
+
+### 3) Documentation Enhancements
+- [ ] Add a flow diagram (start → per-test updates → summary).
+- [ ] Include a real Discord thread screenshot (API and E2E examples).
+- [ ] Consider splitting docs: Quickstart vs. Dev Guide.
+
+### 4) Framework Enhancements
+- [ ] Centralize timeouts/config for E2E & API.
+- [ ] Remove `markSkipped()` helper (⚪)
+
+### 5) Quality-of-Life
+- [ ] Version badge in README (auto from `package.json`).
+- [ ] (Optional) script to prune old `/playwright-report` folders.
