@@ -6,7 +6,7 @@ const fs = require('fs');
 // === CONFIG ===
 const REPORTS_DIR = path.resolve('reports');                 // local folder that accumulates all runs
 const SOURCE_DIR  = path.resolve('.playwright-report');      // Playwright output
-const KEEP_DAYS   = 30;                                      // retention window
+const KEEP_DAYS   = 15;                                      // retention window
 const REPO        = 'dgavero/playwright-automation-template';
 const BASE_URL    = `https://${REPO.split('/')[0]}.github.io/${REPO.split('/')[1]}/reports`;
 
