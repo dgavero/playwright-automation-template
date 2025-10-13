@@ -142,7 +142,6 @@ The framework is designed to be:
   - Collect failed test IDs from last run.
   - Trigger a rerun for only those tests (using tags or IDs).
 
-
 ### 3) Documentation Enhancements
 - [ ] Add a flow diagram (start → per-test updates → summary).
 - [ ] Include a real Discord thread screenshot (API and E2E examples).
@@ -150,7 +149,6 @@ The framework is designed to be:
 
 ### 4) Framework Enhancements
 - [ ] Centralize timeouts/config for E2E & API.
-- [ ] Remove `markSkipped()` helper (⚪)
 
 ### 5) Quality-of-Life
 - [ ] Version badge in README (auto from `package.json`).
